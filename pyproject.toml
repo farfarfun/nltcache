@@ -1,10 +1,10 @@
 [project]
 name = "funcache-tau"
-version = "1.0.3"
+version = "1.0.4"
 description = "funcache"
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies = [ "cachebox==5.0.1", "cachetools>=5.5.2", "diskcache>=5.6.3", "funlog-tau>=1.0.1",]
+dependencies = [ "cachebox==5.0.1", "diskcache>=5.6.3", "funlog-tau>=1.0.1",]
 [[project.authors]]
 name = "niuliangtao"
 email = "farfarfun@qq.com"

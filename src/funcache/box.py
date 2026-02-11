@@ -1,3 +1,5 @@
+from typing import Callable
+
 from cachebox import FIFOCache, LFUCache, LRUCache, RRCache, TTLCache, VTTLCache, cached
 
 __all__ = [
@@ -11,53 +13,54 @@ __all__ = [
 ]
 
 
-def cache(func, /):
-    return cached(LRUCache(maxsize=1000)).__call__(func)
+def cache(func: Callable, /) -> Callable:
+    """Simple LRU cache decorator with a default maxsize of 1000."""
+    return cached(LRUCache(maxsize=1000))(func)
 
 
-def vttl_cache(maxsize=1000):
+def vttl_cache(maxsize: int = 1000, ttl: int = 60) -> Callable:
+    """VTTLCache: removes expired elements lazily when accessed.
+
+    VTTLCache: 在访问时才惰性移除已过期的缓存元素。
     """
-    VTTLCache: the TTL cache will automatically remove the element in the cache that has expired when need.
-    VTTLCache: TTL 缓存会在需要时自动移除已过期的缓存元素。
-    """
-    return lambda func: cached(VTTLCache(maxsize=maxsize, ttl=60)).__call__(func)
+    return lambda func: cached(VTTLCache(maxsize=maxsize, ttl=ttl))(func)
 
 
-def ttl_cache(maxsize=1000, ttl=60):
+def ttl_cache(maxsize: int = 1000, ttl: int = 60) -> Callable:
+    """TTLCache: automatically removes expired elements.
+
+    TTLCache：自动移除已过期的缓存元素。
     """
-    TTLCache: the TTL cache will automatically remove the element in the cache that has expired.
-    TTLCache：TTL 缓存会自动移除已过期的缓存元素。
-    """
-    return lambda func: cached(TTLCache(maxsize=maxsize, ttl=ttl)).__call__(func)
+    return lambda func: cached(TTLCache(maxsize=maxsize, ttl=ttl))(func)
 
 
-def lru_cache(maxsize=1000):
+def lru_cache(maxsize: int = 1000) -> Callable:
+    """LRUCache: removes the least recently used element.
+
+    LRUCache：移除缓存中自上次访问以来时间最长的元素。
     """
-    LRUCache: the LRU cache will remove the element in the cache that has not been accessed in the longest time.
-    LRUCache：LRU 缓存会移除缓存中自上次访问以来时间最长的元素。
-    """
-    return lambda func: cached(LRUCache(maxsize=maxsize)).__call__(func)
+    return lambda func: cached(LRUCache(maxsize=maxsize))(func)
 
 
-def lfu_cache(maxsize=1000):
+def lfu_cache(maxsize: int = 1000) -> Callable:
+    """LFUCache: removes the least frequently used element.
+
+    LFUCache：移除缓存中访问次数最少的元素，不论其访问时间。
     """
-    LFUCache: the LFU cache will remove the element in the cache that has been accessed the least, regardless of time.
-    LFUCache：LFU 缓存会移除缓存中访问次数最少的元素，不论其访问时间。
-    """
-    return lambda func: cached(LFUCache(maxsize=maxsize)).__call__(func)
+    return lambda func: cached(LFUCache(maxsize=maxsize))(func)
 
 
-def fifo_cache(maxsize=1000):
+def fifo_cache(maxsize: int = 1000) -> Callable:
+    """FIFOCache: removes the oldest element.
+
+    FIFOCache：移除在缓存中停留时间最长的元素。
     """
-    FIFOCache: the FIFO cache will remove the element that has been in the cache the longest.
-    FIFOCache：FIFO 缓存将移除在缓存中停留时间最长的元素。
-    """
-    return lambda func: cached(FIFOCache(maxsize=maxsize)).__call__(func)
+    return lambda func: cached(FIFOCache(maxsize=maxsize))(func)
 
 
-def rr_cache(maxsize=1000):
+def rr_cache(maxsize: int = 1000) -> Callable:
+    """RRCache: randomly removes an element when space is needed.
+
+    RRCache: 在必要时随机选择一个元素进行移除，以腾出空间。
     """
-    RRCache: the RR cache will choose randomly element to remove it to make space when necessary.
-    RRCache: RR 缓存会在必要时随机选择一个元素进行移除，以腾出空间。
-    """
-    return lambda func: cached(RRCache(maxsize=maxsize)).__call__(func)
+    return lambda func: cached(RRCache(maxsize=maxsize))(func)
